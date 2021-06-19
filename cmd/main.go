@@ -3,11 +3,15 @@ package main
 import (
 	"cevent"
 	"cevent/pkg/handler"
+	"cevent/pkg/repository"
+	"cevent/pkg/service"
 	"log"
 )
 
 func main() {
-	handlers := new(handler.Handler)
+	repos := repository.NewRepository()
+	services := service.NewService(repos)
+	handlers := handler.NewHandler(services)
 
 	server := new(cevent.Server)
 	if err := server.Run("8000", handlers.InitRouters()); err != nil {
