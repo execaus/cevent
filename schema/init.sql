@@ -71,7 +71,7 @@ CREATE TABLE "EventGroup"
 (
     "Event"   bigint            NOT NULL,
     "Caption" character varying NOT NULL,
-    "Index"   serial            NOT NULL,
+    "Index"   serial            NOT NULL UNIQUE,
     CONSTRAINT "EventGroup_pk" PRIMARY KEY ("Event", "Caption")
 ) WITH (
       OIDS = FALSE
@@ -139,9 +139,7 @@ CREATE TABLE "Log"
 
 
 ALTER TABLE "Event"
-    ADD CONSTRAINT "Event_fk0" FOREIGN KEY ("City") REFERENCES "City" ("Name");
-ALTER TABLE "Event"
-    ADD CONSTRAINT "Event_fk1" FOREIGN KEY ("Type") REFERENCES "EventType" ("Caption");
+    ADD CONSTRAINT "Event_fk0" FOREIGN KEY ("City") REFERENCES "City" ("ID");
 
 ALTER TABLE "Application"
     ADD CONSTRAINT "Application_fk0" FOREIGN KEY ("User") REFERENCES "User" ("Email");
