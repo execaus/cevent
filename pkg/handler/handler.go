@@ -3,6 +3,11 @@ package handler
 import (
 	"cevent/pkg/service"
 	"github.com/gin-gonic/gin"
+	"io"
+	"math/rand"
+	"mime/multipart"
+	"os"
+	"time"
 )
 
 type Handler struct {
@@ -33,4 +38,37 @@ func (h *Handler) InitRouters() *gin.Engine {
 	}
 
 	return router
+}
+
+func saveImage(file multipart.File, header *multipart.FileHeader, err error) (string, error) {
+	if err != nil {
+		return "", err
+	}
+	filename := generateRandomString(12) + ".png"
+
+	out, err := os.Create("./upload/" + filename)
+	if err != nil {
+		return "", err
+	}
+	defer out.Close()
+	_, err = io.Copy(out, file)
+	if err != nil {
+		return "", err
+	}
+
+	return filename, nil
+}
+
+func generateRandomString(length int) string {
+	const charset = "abcdefghijklmnopqrstuvwxyz" +
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+	var seededRand = rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	s := make([]byte, length)
+	for i := range s {
+		s[i] = charset[seededRand.Intn(len(charset))]
+	}
+
+	return string(s)
 }
