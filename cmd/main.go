@@ -5,10 +5,13 @@ import (
 	"cevent/pkg/handler"
 	"cevent/pkg/repository"
 	"cevent/pkg/service"
+	"context"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/subosito/gotenv"
 	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
@@ -39,10 +42,27 @@ func main() {
 	handlers := handler.NewHandler(services)
 
 	server := new(cevent.Server)
-	if err := server.Run(viper.GetString("port"), handlers.InitRouters()); err != nil {
-		logrus.Fatalf("error occured while running http server: %s", err.Error())
+	go func() {
+		if err := server.Run(viper.GetString("port"), handlers.InitRouters()); err != nil {
+			logrus.Fatalf("error occured while running http server: %s", err.Error())
+		}
+	}()
+
+	logrus.Println("Server is started")
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	logrus.Println("Server shutting down")
+
+	if err := server.Shutdown(context.Background()); err != nil {
+		logrus.Errorf("error occured on server shutting down: %s", err.Error())
 	}
 
+	if err := db.Close(); err != nil {
+		logrus.Errorf("error occured on db connection close: %s", err.Error())
+	}
 }
 
 func initConfig() error {
