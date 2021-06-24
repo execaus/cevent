@@ -1,5 +1,6 @@
 CREATE TABLE "User"
 (
+    "ID"           serial                   NOT NULL,
     "Email"        character varying        NOT NULL,
     "PasswordHash" character varying        NOT NULL,
     "Name"         character varying        NOT NULL,
@@ -9,7 +10,7 @@ CREATE TABLE "User"
     "Company"      character varying        NOT NULL,
     "CreateDate"   timestamp with time zone NOT NULL,
     "Birthday"     timestamp with time zone,
-    CONSTRAINT "User_pk" PRIMARY KEY ("Email")
+    CONSTRAINT "User_pk" PRIMARY KEY ("ID")
 ) WITH (
       OIDS = FALSE
       );
@@ -40,7 +41,7 @@ CREATE TABLE "Event"
 
 CREATE TABLE "Application"
 (
-    "User"       character varying NOT NULL,
+    "User"       bigint            NOT NULL,
     "Event"      bigint            NOT NULL,
     "Role"       bigint            NOT NULL,
     "Group"      bigint            NOT NULL,
@@ -142,7 +143,7 @@ ALTER TABLE "Event"
     ADD CONSTRAINT "Event_fk0" FOREIGN KEY ("City") REFERENCES "City" ("ID");
 
 ALTER TABLE "Application"
-    ADD CONSTRAINT "Application_fk0" FOREIGN KEY ("User") REFERENCES "User" ("Email");
+    ADD CONSTRAINT "Application_fk0" FOREIGN KEY ("User") REFERENCES "User" ("ID");
 ALTER TABLE "Application"
     ADD CONSTRAINT "Application_fk1" FOREIGN KEY ("Event") REFERENCES "Event" ("ID");
 ALTER TABLE "Application"

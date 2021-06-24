@@ -20,7 +20,7 @@ func NewAuthService(repo repository.Authorization) *AuthService {
 
 func (s *AuthService) CreateUser(user models.User) error {
 	user.Password = generatePasswordHash(user.Password)
-	user.Photo = "default-user-avatar.png"
+	user.Photo = "default-user-avatar.svg"
 	user.CreateDate = time.Now()
 
 	return s.repo.CreateUser(user)

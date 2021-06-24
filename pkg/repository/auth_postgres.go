@@ -16,8 +16,16 @@ func NewAuthPostgres(db *sqlx.DB) *AuthPostgres {
 }
 
 func (r *AuthPostgres) CreateUser(user models.User) error {
-	query := fmt.Sprintf("INSERT INTO %s VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)", userTable)
-	_, err := r.db.Exec(query, user)
+	query := fmt.Sprintf(`INSERT INTO %s ("Email", "PasswordHash", "Name", "Surname", "CreateDate", "Birthday") 
+		VALUES($1, $2, $3, $4, $5, $6)`, userTable)
+	_, err := r.db.Exec(query,
+		user.Email,
+		user.Password,
+		user.Name,
+		user.Surname,
+		user.CreateDate,
+		nil,
+	)
 	if err != nil {
 		return err
 	}
