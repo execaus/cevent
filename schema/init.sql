@@ -1,7 +1,7 @@
 CREATE TABLE "User"
 (
     "ID"           serial                   NOT NULL,
-    "Email"        character varying        NOT NULL,
+    "Email"        character varying        NOT NULL UNIQUE,
     "PasswordHash" character varying        NOT NULL,
     "Name"         character varying        NOT NULL,
     "Surname"      character varying        NOT NULL,
